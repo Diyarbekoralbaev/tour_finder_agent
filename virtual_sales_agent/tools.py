@@ -267,8 +267,6 @@ def get_locations_data():
                 data = response.json()
                 if data.get('success'):
                     _locations_cache = data.get('data', [])
-                    with open("locations_cache.json", "w", encoding="utf-8") as f:
-                        json.dump(_locations_cache, f, ensure_ascii=False, indent=2)
         except Exception as e:
             print(f"Error fetching locations: {e}")
             _locations_cache = []
