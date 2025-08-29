@@ -13,7 +13,7 @@ from langgraph.prebuilt import tools_condition, ToolNode
 from typing_extensions import TypedDict
 
 from .tools import (
-    search_locations,
+    search_tours_for_location,
     search_tours,
     get_tour_details,
     get_tour_recommendations,
@@ -88,7 +88,7 @@ assistant_prompt = ChatPromptTemplate.from_messages(
 - Show ACTUAL tour packages with real prices from the API
 - Don't give generic estimates - use real data only
 - Ask for specific city if only country is mentioned
-- If there are no tours found, suggest other cities for that country using search_locations. But before be sure to check for tours in the whole country. Check all.
+- If there are no tours found for city, suggest other cities in that country. But before be sure to check for tours in the whole country.
 - If there are still no tours, suggest popular destinations using get_popular_destinations
 - If customer is unsure, use get_tour_recommendations to suggest based on preferences
 - If customer says month then search for full month (e.g., "iyul" = 01.07.2024 to 31.07.2024)
@@ -174,7 +174,7 @@ Remember: Only search with the information customer actually provides. Ask for m
 
 # All tools for the tour consultation agent
 all_tools = [
-    search_locations,
+    search_tours_for_location,
     search_tours,
     get_tour_details,
     get_tour_recommendations,

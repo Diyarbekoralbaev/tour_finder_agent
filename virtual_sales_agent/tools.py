@@ -17,7 +17,6 @@ _locations_cache = None
 _origin_locations_cache = None
 
 # Transliteration mapping for common location names
-# Complete transliteration mapping for all locations in your API
 TRANSLITERATION_MAP = {
     # === UZBEKISTAN (Origin Cities) ===
     'toshkent': 'ташкент',
@@ -35,7 +34,7 @@ TRANSLITERATION_MAP = {
 
     # === COUNTRIES ===
     # Turkey
-    'turkiya': 'турция',  # Main country name from your API
+    'turkiya': 'турция',
     'turkey': 'турция',
     'turtsiya': 'турция',
 
@@ -49,86 +48,87 @@ TRANSLITERATION_MAP = {
     'france': 'франция',
 
     # UAE
-    'baa': 'оаэ',  # From your API "BAA"
+    'baa': 'оаэ',
     'uae': 'оаэ',
     'emirates': 'оаэ',
 
     # Egypt
-    'misr': 'египет',  # From your API "Misr"
+    'misr': 'египет',
     'egypt': 'египет',
 
     # Thailand
-    'tailand': 'таиланд',  # From your API "Tailand"
+    'tailand': 'таиланд',
     'thailand': 'таиланд',
 
     # Malaysia
-    'malayziya': 'малайзия',  # From your API "Malayziya"
+    'malayziya': 'малайзия',
     'malaysia': 'малайзия',
 
     # Indonesia
-    'indoneziya': 'индонезия',  # From your API "Indoneziya"
+    'indoneziya': 'индонезия',
     'indonesia': 'индонезия',
 
     # Maldives
-    'maldiv orollari': 'мальдивы',  # From your API "Maldiv orollari"
+    'maldiv orollari': 'мальдивы',
     'maldiv': 'мальдивы',
     'maldives': 'мальдивы',
     'maldivy': 'мальдивы',
 
     # India
-    'hindiston': 'индия',  # From your API "Hindiston"
+    'hindiston': 'индия',
     'india': 'индия',
 
     # Singapore
-    'singapur': 'сингапур',  # From your API "Singapur"
+    'singapur': 'сингапур',
     'singapore': 'сингапур',
 
     # China
-    'xitoy': 'китай',  # From your API "Xitoy"
+    'xitoy': 'китай',
     'china': 'китай',
     'kitay': 'китай',
 
     # Georgia
-    'gruziya': 'грузия',  # From your API "Gruziya"
+    'gruziya': 'грузия',
     'georgia': 'грузия',
 
     # Vietnam
-    'vetnam': 'вьетнам',  # From your API "Vetnam"
+    'vetnam': 'вьетнам',
     'vietnam': 'вьетнам',
 
     # Azerbaijan
-    'ozarbayjon': 'азербайджан',  # From your API "Ozarbayjon"
+    'ozarbayjon': 'азербайджан',
     'azerbayjan': 'азербайджан',
     'azerbaijan': 'азербайджан',
 
-    # Qatar (already in English in API)
+    # Qatar
     'qatar': 'катар',
     'katar': 'катар',
 
     # Oman
-    'ummon sultonligi': 'оман',  # From your API "Ummon Sultonligi"
+    'ummon sultonligi': 'оман',
     'ummon': 'оман',
     'oman': 'оман',
 
-    # Sri Lanka (already mostly English)
+    # Sri Lanka
     'shri lanka': 'шри-ланка',
     'sri lanka': 'шри-ланка',
 
     # Kazakhstan
-    "qozog'iston": 'казахстан',  # From your API "Qozog'iston"
+    "qozog'iston": 'казахстан',
     'qozogiston': 'казахстан',
     'kazakhstan': 'казахстан',
 
     # Saudi Arabia
-    'saudiya arabistoni': 'саудовская аравия',  # From your API "Saudiya Arabistoni"
+    'saudiya arabistoni': 'саудовская аравия',
     'saudiya': 'саудовская аравия',
     'saudi arabia': 'саудовская аравия',
 
     # Japan
-    'yaponiya': 'япония',  # From your API "Yaponiya"
+    'yaponiya': 'япония',
     'japan': 'япония',
 
-    # === TURKEY CITIES ===
+    # === CITY MAPPINGS ===
+    # Turkey cities
     'istanbul': 'стамбул',
     'marmaris': 'мармарис',
     'kappadokiya': 'каппадокия',
@@ -138,9 +138,9 @@ TRANSLITERATION_MAP = {
     'bodrum': 'бодрум',
     'bursa': 'бурса',
     'dalaman': 'даламан',
-    'anqara': 'анкара',  # From your API "Anqara"
+    'anqara': 'анкара',
     'ankara': 'анкара',
-    "sovg'a": 'белек',  # From your API "Sovg'a" -> Belek
+    "sovg'a": 'белек',
     'belek': 'белек',
     'side': 'сиде',
     'izmir': 'измир',
@@ -150,121 +150,92 @@ TRANSLITERATION_MAP = {
     'alanya': 'аланья',
     'fethiye': 'фетхие',
 
-    # === UAE CITIES ===
-    'dubay': 'дубай',  # From your API "Dubay"
+    # UAE cities
+    'dubay': 'дубай',
     'dubai': 'дубай',
-    'abu-dabi': 'абу-даби',  # From your API "Abu-Dabi"
+    'abu-dabi': 'абу-даби',
     'abu dhabi': 'абу-даби',
-    'sharja': 'шарджа',  # From your API "Sharja"
+    'sharja': 'шарджа',
     'sharjah': 'шарджа',
-    'ras-al-xayma': 'рас-эль-хайма',  # From your API "Ras-al-Xayma"
+    'ras-al-xayma': 'рас-эль-хайма',
     'ras al khaimah': 'рас-эль-хайма',
-    'fujeyra': 'фуджейра',  # From your API "Fujeyra"
+    'fujeyra': 'фуджейра',
     'fujairah': 'фуджейра',
 
-    # === THAILAND CITIES ===
-    'pxuket': 'пхукет',  # From your API "Pxuket"
+    # Thailand cities
+    'pxuket': 'пхукет',
     'phuket': 'пхукет',
     'bangkok': 'бангкок',
     'pattaya': 'паттайя',
 
-    # === EGYPT CITIES ===
-    'sharm al-shayx': 'шарм-эль-шейх',  # From your API "Sharm al-Shayx"
+    # Egypt cities
+    'sharm al-shayx': 'шарм-эль-шейх',
     'sharm el sheikh': 'шарм-эль-шейх',
     'hurghada': 'хургада',
 
-    # === MALAYSIA CITIES ===
+    # Malaysia cities
     'kuala-lumpur': 'куала-лумпур',
     'kuala lumpur': 'куала-лумпур',
     'penang': 'пенанг',
     'langkawi': 'лангкави',
-    'ari atollari': 'атоллы ари',  # This seems misplaced in Malaysia data
 
-    # === INDONESIA CITIES ===
+    # Indonesia cities
     'bali': 'бали',
     'jakarta': 'джакарта',
-    'gili trawangan': 'gili trawangan',  # Mixed language entry
     'denpasar': 'денпасар',
 
-    # === MALDIVES CITIES ===
+    # Maldives cities
     'male': 'мале',
     'bodufoludo': 'бодафолуду',
     'feridu': 'фериду',
-    'maldiva': 'мальдивы',  # Generic Maldives reference
     'todu': 'тодду',
-    'shimoliy male atolli': 'north male atoll',  # From your API
-    'north male atoll': 'north male atoll',
 
-    # === INDIA CITIES ===
+    # India cities
     'goa': 'гоа',
-    'dehli': 'дели',  # From your API "Dehli"
+    'dehli': 'дели',
     'delhi': 'дели',
-    'mumbay': 'мумбаи',  # From your API "Mumbay"
+    'mumbay': 'мумбаи',
     'mumbai': 'мумбаи',
 
-    # === CHINA CITIES ===
-    'pekin': 'пекин',  # From your API "Pekin"
+    # China cities
+    'pekin': 'пекин',
     'beijing': 'пекин',
-    'shanxay': 'шанхай',  # From your API "Shanxay"
+    'shanxay': 'шанхай',
     'shanghai': 'шанхай',
-    'guanchjou': 'гуанчжоу',  # From your API "Guanchjou"
+    'guanchjou': 'гуанчжоу',
     'guangzhou': 'гуанчжоу',
-    'xaynan': 'хайнань',  # From your API "Xaynan"
+    'xaynan': 'хайнань',
     'hainan': 'хайнань',
     'sanya': 'санья',
 
-    # === GEORGIA CITIES ===
-    'tbilisi': 'тбилиси',
-    'borjomi': 'borjomi',  # Mixed entry
-
-    # === VIETNAM CITIES ===
-    'fukuok': 'фукуок',  # From your API "Fukuok"
+    # Vietnam cities
+    'fukuok': 'фукуок',
     'phu quoc': 'фукуок',
-    'nyachang': 'нячанг',  # From your API "Nyachang"
-    'nha trang': 'nha trang',  # Mixed entry in your API
+    'nyachang': 'нячанг',
+    'nha trang': 'нячанг',
     'nha-trang': 'нячанг',
     'danang': 'дананг',
-    'hoi an': 'hoi an',  # Mixed entry in your API
+    'hoi an': 'хойан',
     'kamran': 'камрань',
 
-    # === AZERBAIJAN CITIES ===
+    # Azerbaijan cities
     'baku': 'баку',
     'naftalan': 'нафталан',
     'lenkoran': 'ленкорань',
 
-    # === QATAR CITIES ===
+    # Georgia cities
+    'tbilisi': 'тбилиси',
+    'borjomi': 'боржоми',
+
+    # Other cities
     'doha': 'доха',
-    'abu samra': 'абу самра',
-
-    # === OMAN CITIES ===
-    'maskat': 'маскат',  # From your API "Maskat"
+    'maskat': 'маскат',
     'muscat': 'маскат',
-    'salala': 'салала',  # From your API "Salala"
+    'salala': 'салала',
     'salalah': 'салала',
-
-    # === SRI LANKA CITIES ===
-    'shri-lanka': 'шри-ланка',  # Generic reference
-    'koggala': 'коггала',
-
-    # === KAZAKHSTAN CITIES ===
-    'shymkent': 'шымкент',
-
-    # === SAUDI ARABIA CITIES ===
-    'madina': 'медина',  # From your API "Madina"
-    'medina': 'медина',
-    'jidda': 'джедда',  # From your API "Jidda"
-    'jeddah': 'джедда',
-    'makka': 'мекка',  # From your API "Makka"
-    'mecca': 'мекка',
-    'makkah': 'мекка',
-
-    # === JAPAN CITIES ===
-    'tokio': 'токио',  # From your API "Tokio"
+    'tokio': 'токио',
     'tokyo': 'токио',
-    'fukuoka': 'фукуока',
-
-    # === FRANCE CITIES ===
-    'parij': 'париж',  # From your API "Parij"
+    'parij': 'париж',
     'paris': 'париж',
 }
 
@@ -283,7 +254,7 @@ def normalize_and_transliterate(name: str) -> List[str]:
     if normalized in reverse_map:
         variants.append(reverse_map[normalized])
 
-    return variants
+    return list(set(variants))  # Remove duplicates
 
 
 def get_locations_data():
@@ -296,6 +267,8 @@ def get_locations_data():
                 data = response.json()
                 if data.get('success'):
                     _locations_cache = data.get('data', [])
+                    with open("locations_cache.json", "w", encoding="utf-8") as f:
+                        json.dump(_locations_cache, f, ensure_ascii=False, indent=2)
         except Exception as e:
             print(f"Error fetching locations: {e}")
             _locations_cache = []
@@ -318,100 +291,650 @@ def get_origin_locations_data():
     return _origin_locations_cache or []
 
 
-def find_location_by_name(location_name: str, location_type: str = "destination") -> Optional[Dict]:
-    """Find location by name with transliteration support"""
+def find_location_comprehensive(location_name: str, location_type: str = "destination") -> Dict[str, Any]:
+    """
+    Comprehensive location finder that returns both exact matches and suggestions
+    """
     locations = get_origin_locations_data() if location_type == "origin" else get_locations_data()
 
     if not locations:
-        print(f"❌ No {location_type} locations data available")
-        return None
+        return {
+            "exact_match": None,
+            "country_match": None,
+            "city_matches": [],
+            "suggestions": []
+        }
 
     search_variants = normalize_and_transliterate(location_name)
-    print(f"🔍 Searching for {location_type}: '{location_name}'")
+    print(f"🔍 Comprehensive search for {location_type}: '{location_name}'")
     print(f"   Search variants: {search_variants}")
 
-    # Create list of all possible locations
-    all_locations = []
+    exact_match = None
+    country_match = None
+    city_matches = []
+    all_countries = []
+    all_cities = []
 
     if location_type == "destination":
+        # Build comprehensive lists
         for country in locations:
-            # Add country itself
             country_variants = normalize_and_transliterate(country["name"])
-            all_locations.append({
+            country_info = {
                 "id": country["id"],
                 "name": country["name"],
                 "variants": country_variants,
                 "type": "country",
-                "data": country
-            })
+                "data": country,
+                "cities": []
+            }
 
-            # Add all cities in country
+            # Check for country match
+            for search_variant in search_variants:
+                for country_variant in country_variants:
+                    if search_variant == country_variant:
+                        country_match = country_info
+                        exact_match = country_info
+                    elif search_variant in country_variant or country_variant in search_variant:
+                        if not country_match:
+                            country_match = country_info
+
+            # Process cities in this country
             for city in country.get("children", []):
                 city_variants = normalize_and_transliterate(city["name"])
-                all_locations.append({
+                city_info = {
                     "id": city["id"],
                     "name": city["name"],
                     "variants": city_variants,
                     "type": "city",
                     "data": city,
-                    "country": country["name"]
-                })
-    else:  # origin
+                    "country": country["name"],
+                    "country_id": country["id"]
+                }
+
+                # Check for city match
+                for search_variant in search_variants:
+                    for city_variant in city_variants:
+                        if search_variant == city_variant:
+                            exact_match = city_info
+                            city_matches.append(city_info)
+                        elif search_variant in city_variant or city_variant in search_variant:
+                            city_matches.append(city_info)
+
+                all_cities.append(city_info)
+                country_info["cities"].append(city_info)
+
+            all_countries.append(country_info)
+
+    else:  # origin locations
         for city in locations:
             city_variants = normalize_and_transliterate(city["name"])
-            all_locations.append({
+            city_info = {
                 "id": city["id"],
                 "name": city["name"],
                 "variants": city_variants,
                 "type": "city",
                 "data": city
-            })
+            }
 
-    # Try exact matches with all variants
-    for search_variant in search_variants:
-        for loc in all_locations:
-            for loc_variant in loc["variants"]:
-                if search_variant == loc_variant:
+            for search_variant in search_variants:
+                for city_variant in city_variants:
+                    if search_variant == city_variant:
+                        exact_match = city_info
+                    elif search_variant in city_variant or city_variant in search_variant:
+                        city_matches.append(city_info)
+
+            all_cities.append(city_info)
+
+    # Remove duplicates from city matches
+    unique_city_matches = []
+    seen_ids = set()
+    for city in city_matches:
+        if city["id"] not in seen_ids:
+            unique_city_matches.append(city)
+            seen_ids.add(city["id"])
+
+    return {
+        "exact_match": exact_match,
+        "country_match": country_match,
+        "city_matches": unique_city_matches,
+        "all_countries": all_countries if location_type == "destination" else [],
+        "all_cities": all_cities
+    }
+
+
+def search_tours_for_location(location_id: int, **search_params) -> Dict[str, Any]:
+    """Search tours for a specific location ID"""
+    try:
+        params = {"destination_location_child_id": location_id}
+        params.update(search_params)
+
+        response = requests.get(f"{TURTOPAR_API_BASE}/tours", params=params, timeout=15)
+
+        if response.status_code == 200:
+            data = response.json()
+            if data.get("success"):
+                tours = data.get("data", [])
+                return {
+                    "success": True,
+                    "tours": tours,
+                    "count": len(tours)
+                }
+
+        return {"success": False, "tours": [], "count": 0}
+    except Exception as e:
+        print(f"Error searching tours for location {location_id}: {e}")
+        return {"success": False, "tours": [], "count": 0}
+
+
+@tool
+def search_tours(
+        origin_city: Optional[str] = None,
+        destination_place: Optional[str] = None,
+        departure_date: Optional[str] = None,
+        budget_max: Optional[int] = None,
+        duration_days: Optional[int] = None,
+        sort_by: str = "price_asc"
+) -> Dict[str, Any]:
+    """
+    Intelligent tour search with hierarchical fallbacks.
+    Searches for tours by destination with smart fallbacks.
+    """
+    try:
+        search_params = {}
+
+        # Handle origin city
+        if origin_city:
+            origin_result = find_location_comprehensive(origin_city, "origin")
+            if origin_result["exact_match"]:
+                search_params["origin_location_child_id"] = origin_result["exact_match"]["id"]
+                print(f"✅ Found origin: {origin_result['exact_match']['name']}")
+
+        # Add other parameters
+        if departure_date:
+            search_params["origin_date"] = departure_date
+        if sort_by:
+            search_params["sort"] = sort_by
+
+        # Handle destination search with intelligent fallbacks
+        if destination_place:
+            location_result = find_location_comprehensive(destination_place, "destination")
+
+            # Strategy 1: Try exact match first
+            tours_found = []
+            search_strategy = "none"
+            searched_location = None
+
+            if location_result["exact_match"]:
+                exact_match = location_result["exact_match"]
+                tours_result = search_tours_for_location(exact_match["id"], **search_params)
+
+                if tours_result["success"] and tours_result["count"] > 0:
+                    tours_found = tours_result["tours"]
+                    search_strategy = f"exact_match_{exact_match['type']}"
+                    searched_location = exact_match
+                    print(f"✅ Found {len(tours_found)} tours for exact match: {exact_match['name']}")
+
+            # Strategy 2: If no tours found and we matched a city, try the country
+            if not tours_found and location_result["exact_match"] and location_result["exact_match"]["type"] == "city":
+                country_id = location_result["exact_match"].get("country_id")
+                if country_id:
+                    tours_result = search_tours_for_location(country_id, **search_params)
+                    if tours_result["success"] and tours_result["count"] > 0:
+                        tours_found = tours_result["tours"]
+                        search_strategy = "country_fallback"
+                        # Find country info
+                        for country in location_result["all_countries"]:
+                            if country["id"] == country_id:
+                                searched_location = country
+                                break
+                        print(f"✅ Found {len(tours_found)} tours in country fallback")
+
+            # Strategy 3: If we matched a country but no tours, try its cities
+            if not tours_found and location_result["country_match"]:
+                country = location_result["country_match"]
+                all_country_tours = []
+                cities_with_tours = []
+
+                for city in country["cities"]:
+                    city_tours_result = search_tours_for_location(city["id"], **search_params)
+                    if city_tours_result["success"] and city_tours_result["count"] > 0:
+                        all_country_tours.extend(city_tours_result["tours"])
+                        cities_with_tours.append(city["name"])
+
+                if all_country_tours:
+                    tours_found = all_country_tours
+                    search_strategy = "cities_in_country"
+                    searched_location = country
+                    print(f"✅ Found {len(tours_found)} tours across cities in {country['name']}")
+
+            # Strategy 4: Try city matches if nothing else worked
+            if not tours_found and location_result["city_matches"]:
+                for city in location_result["city_matches"][:3]:  # Try top 3 matches
+                    city_tours_result = search_tours_for_location(city["id"], **search_params)
+                    if city_tours_result["success"] and city_tours_result["count"] > 0:
+                        tours_found = city_tours_result["tours"]
+                        search_strategy = "similar_city"
+                        searched_location = city
+                        print(f"✅ Found {len(tours_found)} tours for similar city: {city['name']}")
+                        break
+
+            # Apply additional filters
+            if tours_found:
+                filtered_tours = tours_found
+
+                if budget_max:
+                    original_count = len(filtered_tours)
+                    filtered_tours = [t for t in filtered_tours
+                                      if t.get("price") is not None and t.get("price", 0) <= budget_max]
+                    print(f"💰 Budget filter: {original_count} -> {len(filtered_tours)} tours")
+
+                if duration_days:
+                    original_count = len(filtered_tours)
+                    filtered_tours = [t for t in filtered_tours
+                                      if t.get("days") is not None and abs(t.get("days", 0) - duration_days) <= 2]
+                    print(f"📅 Duration filter: {original_count} -> {len(filtered_tours)} tours")
+
+                # Build suggestions for alternative locations
+                suggestions = []
+                if search_strategy == "country_fallback":
+                    # Suggest specific cities in the country
+                    country = searched_location
+                    cities_with_tours = []
+                    for city in country["cities"]:
+                        city_tours_result = search_tours_for_location(city["id"], **search_params)
+                        if city_tours_result["success"] and city_tours_result["count"] > 0:
+                            cities_with_tours.append(city["name"])
+                    suggestions = cities_with_tours[:5]
+
+                return {
+                    "status": "success",
+                    "count": len(filtered_tours),
+                    "tours": filtered_tours[:10],
+                    "search_strategy": search_strategy,
+                    "searched_location": searched_location["name"] if searched_location else None,
+                    "searched_location_type": searched_location["type"] if searched_location else None,
+                    "suggestions": suggestions,
+                    "has_more": len(filtered_tours) > 10,
+                    "message": _build_search_message(search_strategy, searched_location, len(filtered_tours),
+                                                          destination_place)
+                }
+            else:
+                # No tours found - provide helpful suggestions
+                suggestions = []
+                if location_result["country_match"]:
+                    # Suggest cities in the matched country
+                    suggestions = [city["name"] for city in location_result["country_match"]["cities"][:5]]
+                elif location_result["city_matches"]:
+                    # Suggest similar cities
+                    suggestions = [city["name"] for city in location_result["city_matches"][:5]]
+                else:
+                    # Suggest popular destinations
+                    popular_countries = ["Turkiya", "BAA", "Tailand", "Misr", "Gruziya"]
+                    suggestions = popular_countries
+
+                return {
+                    "status": "no_tours_found",
+                    "count": 0,
+                    "tours": [],
+                    "searched_for": destination_place,
+                    "suggestions": suggestions,
+                    "message": f"No tours found for '{destination_place}'. Try these destinations: {', '.join(suggestions)}"
+                }
+
+        else:
+            # No destination specified, search all
+            response = requests.get(f"{TURTOPAR_API_BASE}/tours", params=search_params, timeout=15)
+            if response.status_code == 200:
+                data = response.json()
+                if data.get("success"):
+                    tours = data.get("data", [])
+                    return {
+                        "status": "success",
+                        "count": len(tours),
+                        "tours": tours[:10],
+                        "message": f"Found {len(tours)} tours available"
+                    }
+
+        return {
+            "status": "error",
+            "message": "Failed to search tours",
+            "tours": [],
+            "count": 0
+        }
+
+    except Exception as e:
+        print(f"💥 Search error: {str(e)}")
+        return {
+            "status": "error",
+            "message": f"Search error: {str(e)}",
+            "tours": [],
+            "count": 0
+        }
+
+
+@tool
+def search_tours(
+        origin_city: Optional[str] = None,
+        destination_place: Optional[str] = None,
+        departure_date: Optional[str] = None,
+        budget_max: Optional[int] = None,
+        duration_days: Optional[int] = None,
+        sort_by: str = "price_asc"
+) -> Dict[str, Any]:
+    """
+    Intelligent tour search with hierarchical fallbacks.
+    Searches for tours by destination with smart fallbacks.
+    """
+    try:
+        search_params = {}
+
+        # Handle origin city
+        if origin_city:
+            origin_result = find_location_comprehensive(origin_city, "origin")
+            if origin_result["exact_match"]:
+                search_params["origin_location_child_id"] = origin_result["exact_match"]["id"]
+                print(f"✅ Found origin: {origin_result['exact_match']['name']}")
+
+        # Add other parameters
+        if departure_date:
+            search_params["origin_date"] = departure_date
+        if sort_by:
+            search_params["sort"] = sort_by
+
+        # Handle destination search with intelligent fallbacks
+        if destination_place:
+            location_result = find_location_comprehensive(destination_place, "destination")
+
+            # Strategy 1: Try exact match first (city or country)
+            tours_found = []
+            search_strategy = "none"
+            searched_location = None
+            original_location = None
+
+            if location_result["exact_match"]:
+                exact_match = location_result["exact_match"]
+                original_location = exact_match
+                tours_result = search_tours_for_location(exact_match["id"], **search_params)
+
+                if tours_result["success"] and tours_result["count"] > 0:
+                    tours_found = tours_result["tours"]
+                    search_strategy = f"exact_match_{exact_match['type']}"
+                    searched_location = exact_match
+                    print(f"✅ Found {len(tours_found)} tours for exact match: {exact_match['name']}")
+
+            # Strategy 2: If exact match was a city but no tours found, try the parent country
+            if not tours_found and location_result["exact_match"] and location_result["exact_match"]["type"] == "city":
+                city = location_result["exact_match"]
+                country_id = city.get("country_id")
+                country_name = city.get("country")
+
+                if country_id:
+                    print(f"🔄 No tours found for {city['name']}, trying parent country {country_name}")
+                    tours_result = search_tours_for_location(country_id, **search_params)
+
+                    if tours_result["success"] and tours_result["count"] > 0:
+                        tours_found = tours_result["tours"]
+                        search_strategy = "country_fallback_from_city"
+
+                        # Find the country info from the results
+                        for country in location_result["all_countries"]:
+                            if country["id"] == country_id:
+                                searched_location = country
+                                break
+
+                        print(f"✅ Found {len(tours_found)} tours for parent country: {country_name}")
+
+            # Strategy 3: If we matched a country but no direct tours, search all cities in that country
+            if not tours_found and location_result["exact_match"] and location_result["exact_match"][
+                "type"] == "country":
+                country = location_result["exact_match"]
+                all_country_tours = []
+                cities_with_tours = []
+
+                print(f"🔍 Searching all cities in {country['name']}")
+                for city in country.get("cities", []):
+                    city_tours_result = search_tours_for_location(city["id"], **search_params)
+                    if city_tours_result["success"] and city_tours_result["count"] > 0:
+                        all_country_tours.extend(city_tours_result["tours"])
+                        cities_with_tours.append(city["name"])
+
+                if all_country_tours:
+                    tours_found = all_country_tours
+                    search_strategy = "cities_in_country"
+                    searched_location = country
                     print(
-                        f"✅ Exact match found: {loc['name']} (ID: {loc['id']}) via '{search_variant}' -> '{loc_variant}'")
-                    return loc
+                        f"✅ Found {len(tours_found)} tours across {len(cities_with_tours)} cities in {country['name']}")
 
-    # Try partial matches
-    for search_variant in search_variants:
-        for loc in all_locations:
-            for loc_variant in loc["variants"]:
-                if search_variant in loc_variant or loc_variant in search_variant:
-                    print(
-                        f"✅ Partial match found: {loc['name']} (ID: {loc['id']}) via '{search_variant}' <-> '{loc_variant}'")
-                    return loc
+            # Strategy 4: If we found similar cities, try the first few matches
+            if not tours_found and location_result["city_matches"]:
+                print(f"🔍 Trying similar city matches")
+                for city in location_result["city_matches"][:3]:  # Try top 3 matches
+                    city_tours_result = search_tours_for_location(city["id"], **search_params)
+                    if city_tours_result["success"] and city_tours_result["count"] > 0:
+                        tours_found = city_tours_result["tours"]
+                        search_strategy = "similar_city"
+                        searched_location = city
+                        print(
+                            f"✅ Found {len(tours_found)} tours for similar city: {city['name']} in {city.get('country', '')}")
+                        break
 
-    print(f"❌ No match found for '{location_name}' with variants {search_variants}")
-    return None
+            # Strategy 5: If we have a country match, try its cities
+            if not tours_found and location_result["country_match"]:
+                country = location_result["country_match"]
+                all_country_tours = []
+                cities_with_tours = []
+
+                print(f"🔍 Trying cities in matched country {country['name']}")
+                for city in country.get("cities", [])[:5]:  # Limit to first 5 cities
+                    city_tours_result = search_tours_for_location(city["id"], **search_params)
+                    if city_tours_result["success"] and city_tours_result["count"] > 0:
+                        all_country_tours.extend(city_tours_result["tours"])
+                        cities_with_tours.append(city["name"])
+
+                if all_country_tours:
+                    tours_found = all_country_tours
+                    search_strategy = "country_match_cities"
+                    searched_location = country
+                    print(f"✅ Found {len(tours_found)} tours in {country['name']}")
+
+            # Apply additional filters if tours found
+            if tours_found:
+                filtered_tours = tours_found
+
+                if budget_max:
+                    original_count = len(filtered_tours)
+                    filtered_tours = [t for t in filtered_tours
+                                      if t.get("price") is not None and t.get("price", 0) <= budget_max]
+                    print(f"💰 Budget filter: {original_count} -> {len(filtered_tours)} tours")
+
+                if duration_days:
+                    original_count = len(filtered_tours)
+                    filtered_tours = [t for t in filtered_tours
+                                      if t.get("days") is not None and abs(t.get("days", 0) - duration_days) <= 2]
+                    print(f"📅 Duration filter: {original_count} -> {len(filtered_tours)} tours")
+
+                # Build intelligent suggestions based on search strategy
+                suggestions = _build_intelligent_suggestions(
+                    search_strategy, searched_location, original_location, location_result, search_params
+                )
+
+                return {
+                    "status": "success",
+                    "count": len(filtered_tours),
+                    "tours": filtered_tours[:10],
+                    "search_strategy": search_strategy,
+                    "searched_location": searched_location["name"] if searched_location else None,
+                    "searched_location_type": searched_location["type"] if searched_location else None,
+                    "original_query": destination_place,
+                    "suggestions": suggestions,
+                    "has_more": len(filtered_tours) > 10,
+                    "message": _build_search_message(search_strategy, searched_location, len(filtered_tours),
+                                                     destination_place, original_location)
+                }
+            else:
+                # No tours found anywhere - provide intelligent suggestions
+                suggestions = _build_no_tours_suggestions(location_result, destination_place)
+
+                return {
+                    "status": "no_tours_found",
+                    "count": 0,
+                    "tours": [],
+                    "searched_for": destination_place,
+                    "suggestions": suggestions,
+                    "message": f"No tours found for '{destination_place}'. Here are some alternatives: {', '.join(suggestions[:3])}"
+                }
+
+        else:
+            # No destination specified, search all
+            response = requests.get(f"{TURTOPAR_API_BASE}/tours", params=search_params, timeout=15)
+            if response.status_code == 200:
+                data = response.json()
+                if data.get("success"):
+                    tours = data.get("data", [])
+                    return {
+                        "status": "success",
+                        "count": len(tours),
+                        "tours": tours[:10],
+                        "message": f"Found {len(tours)} tours available"
+                    }
+
+        return {
+            "status": "error",
+            "message": "Failed to search tours",
+            "tours": [],
+            "count": 0
+        }
+
+    except Exception as e:
+        print(f"💥 Search error: {str(e)}")
+        return {
+            "status": "error",
+            "message": f"Search error: {str(e)}",
+            "tours": [],
+            "count": 0
+        }
 
 
+def _build_intelligent_suggestions(search_strategy: str, searched_location: Dict, original_location: Dict,
+                                   location_result: Dict, search_params: Dict) -> List[str]:
+    """Build intelligent suggestions based on the search strategy and results"""
+    suggestions = []
+
+    if search_strategy == "country_fallback_from_city":
+        # Original search was for a city (e.g., Bali), but we found tours for the country (Indonesia)
+        # Suggest other cities in the same country
+        country = searched_location
+        cities_with_tours = []
+
+        for city in country.get("cities", [])[:8]:  # Check more cities for better suggestions
+            if city["name"] != original_location["name"]:  # Don't suggest the original city
+                city_tours_result = search_tours_for_location(city["id"], **search_params)
+                if city_tours_result["success"] and city_tours_result["count"] > 0:
+                    cities_with_tours.append(city["name"])
+
+        suggestions = cities_with_tours[:5]
+
+    elif search_strategy in ["cities_in_country", "country_match_cities"]:
+        # We found tours across multiple cities in a country
+        country = searched_location
+        suggestions = [city["name"] for city in country.get("cities", [])[:5]]
+
+    elif search_strategy == "similar_city":
+        # We found a similar city, suggest other cities in the same country
+        city = searched_location
+        country_name = city.get("country")
+        if country_name:
+            # Find other cities in the same country
+            for country in location_result.get("all_countries", []):
+                if country["name"] == country_name:
+                    suggestions = [c["name"] for c in country["cities"][:4] if c["name"] != city["name"]]
+                    break
+
+    return suggestions
+
+
+def _build_no_tours_suggestions(location_result: Dict, original_query: str) -> List[str]:
+    """Build suggestions when no tours are found"""
+    suggestions = []
+
+    if location_result["exact_match"] and location_result["exact_match"]["type"] == "city":
+        # User searched for a specific city, suggest other cities in the same country
+        city = location_result["exact_match"]
+        country_name = city.get("country")
+
+        if country_name:
+            # Find other cities in the same country
+            for country in location_result.get("all_countries", []):
+                if country["name"] == country_name:
+                    other_cities = [c["name"] for c in country["cities"][:5] if c["name"] != city["name"]]
+                    suggestions.extend(other_cities)
+                    break
+
+        # If still no suggestions, add the country itself
+        if not suggestions and country_name:
+            suggestions.append(country_name)
+
+    elif location_result["country_match"]:
+        # User searched for a country, suggest popular cities in that country
+        country = location_result["country_match"]
+        suggestions = [city["name"] for city in country["cities"][:5]]
+
+    elif location_result["city_matches"]:
+        # User search matched similar cities, suggest them
+        suggestions = [city["name"] for city in location_result["city_matches"][:4]]
+        # Add their countries too
+        for city in location_result["city_matches"][:2]:
+            if city.get("country") and city["country"] not in suggestions:
+                suggestions.append(city["country"])
+
+    # If still no suggestions, add popular destinations
+    if not suggestions:
+        suggestions = ["Turkiya", "BAA", "Tailand", "Misr", "Gruziya", "Indoneziya"]
+
+    return suggestions[:6]  # Limit to 6 suggestions
+
+
+def _build_search_message(search_strategy: str, searched_location: Dict, tour_count: int,
+                          original_query: str, original_location: Dict = None) -> str:
+    """Build a descriptive message about the search results"""
+    if not searched_location:
+        return f"Found {tour_count} tours"
+
+    location_name = searched_location["name"]
+
+    if search_strategy == "exact_match_city":
+        return f"Found {tour_count} tours to {location_name}"
+    elif search_strategy == "exact_match_country":
+        return f"Found {tour_count} tours to {location_name}"
+    elif search_strategy == "country_fallback_from_city":
+        original_name = original_location["name"] if original_location else original_query
+        return f"No specific tours to {original_name}, but found {tour_count} tours to {location_name}. Check the suggestions for specific cities."
+    elif search_strategy == "cities_in_country":
+        return f"Found {tour_count} tours across various cities in {location_name}"
+    elif search_strategy == "country_match_cities":
+        return f"Found {tour_count} tours in {location_name} (matched from your search)"
+    elif search_strategy == "similar_city":
+        return f"Found {tour_count} tours to {location_name} (similar to '{original_query}')"
+    else:
+        return f"Found {tour_count} tours"
+
+# Keep the other existing tools unchanged
 @tool
 def get_tour_details(tour_slug: str) -> Dict[str, Any]:
     """
     Get detailed information about a specific tour using its slug.
-    This provides comprehensive tour details including hotels, pricing, schedules, and contact information.
-
-    Args:
-        tour_slug (str): The tour slug identifier (from search results)
     """
     try:
         print(f"🔍 Fetching detailed tour info for: {tour_slug}")
 
         response = requests.get(f"{TURTOPAR_API_BASE}/tours/view/{tour_slug}", timeout=15)
-        print(f"📡 API Response status: {response.status_code}")
 
         if response.status_code == 200:
             data = response.json()
-            print(f"📊 API Response success: {data.get('success')}")
 
             if data.get("success"):
                 tour_data = data.get("data", {})
 
-                # Format the detailed information
                 tour_info = {
                     "status": "success",
                     "tour_details": {
@@ -460,174 +983,18 @@ def get_tour_details(tour_slug: str) -> Dict[str, Any]:
                         })
 
                 return tour_info
-            else:
-                return {
-                    "status": "error",
-                    "message": "Tour details not found",
-                    "tour_details": {}
-                }
-        else:
-            return {
-                "status": "error",
-                "message": f"Failed to fetch tour details (HTTP {response.status_code})",
-                "tour_details": {}
-            }
+
+        return {
+            "status": "error",
+            "message": "Tour details not found",
+            "tour_details": {}
+        }
 
     except Exception as e:
-        print(f"💥 Tour details error: {str(e)}")
         return {
             "status": "error",
             "message": f"Error fetching tour details: {str(e)}",
             "tour_details": {}
-        }
-
-
-@tool
-def search_tours(
-        origin_city: Optional[str] = None,
-        destination_place: Optional[str] = None,
-        departure_date: Optional[str] = None,
-        budget_max: Optional[int] = None,
-        duration_days: Optional[int] = None,
-        sort_by: str = "price_asc"
-) -> Dict[str, Any]:
-    """
-    Search for tours based on criteria.
-    """
-    try:
-        # Build API parameters
-        params = {}
-
-        print(f"🔍 DEBUG: Searching with parameters:")
-        print(f"   origin_city: {origin_city}")
-        print(f"   destination_place: {destination_place}")
-        print(f"   departure_date: {departure_date}")
-        print(f"   duration_days: {duration_days}")
-
-        # Find origin location
-        if origin_city:
-            origin_loc = find_location_by_name(origin_city, "origin")
-            if origin_loc:
-                params["origin_location_child_id"] = origin_loc["id"]
-                print(f"✅ Found origin: {origin_loc['name']} (ID: {origin_loc['id']})")
-
-        # Find destination location
-        destination_found = None
-        if destination_place:
-            dest_loc = find_location_by_name(destination_place, "destination")
-            if dest_loc:
-                params["destination_location_child_id"] = dest_loc["id"]
-                destination_found = dest_loc
-                print(f"✅ Found destination: {dest_loc['name']} (ID: {dest_loc['id']})")
-
-        # Add other parameters
-        if departure_date:
-            params["origin_date"] = departure_date
-        if sort_by:
-            params["sort"] = sort_by
-
-        print(f"🌐 API Request params: {params}")
-
-        # Make API request
-        response = requests.get(f"{TURTOPAR_API_BASE}/tours", params=params, timeout=15)
-        print(f"📡 API Response status: {response.status_code}")
-
-        if response.status_code == 200:
-            data = response.json()
-            print(f"📊 API Response success: {data.get('success')}")
-
-            if data.get("success"):
-                tours = data.get("data", [])
-                print(f"🎯 Found {len(tours)} tours from API")
-
-                # Apply additional filters with proper null handling
-                filtered_tours = tours
-                if budget_max:
-                    original_count = len(filtered_tours)
-                    filtered_tours = [t for t in filtered_tours
-                                      if t.get("price") is not None and t.get("price", 0) <= budget_max]
-                    print(f"💰 Budget filter: {original_count} -> {len(filtered_tours)} tours")
-
-                if duration_days:
-                    original_count = len(filtered_tours)
-                    # Handle None values in days field
-                    filtered_tours = [t for t in filtered_tours
-                                      if t.get("days") is not None and abs(t.get("days", 0) - duration_days) <= 2]
-                    print(f"📅 Duration filter: {original_count} -> {len(filtered_tours)} tours")
-
-                # Log some example tours for debugging
-                for i, tour in enumerate(filtered_tours[:3]):
-                    tour_days = tour.get('days', 'N/A')
-                    tour_price = tour.get('price', 'N/A')
-                    tour_slug = tour.get('slug', 'no-slug')
-                    print(
-                        f"Tour {i + 1}: {tour.get('name', 'Unnamed')} - ${tour_price} - {tour_days} days - slug: {tour_slug}")
-
-                return {
-                    "status": "success",
-                    "count": len(filtered_tours),
-                    "tours": filtered_tours[:10],  # Return top 10
-                    "search_params": params,
-                    "has_more": len(filtered_tours) > 10,
-                    "destination_found": destination_found["name"] if destination_found else None
-                }
-
-        return {
-            "status": "error",
-            "message": "Failed to search tours",
-            "tours": [],
-            "count": 0
-        }
-
-    except Exception as e:
-        print(f"💥 Search error: {str(e)}")
-        return {
-            "status": "error",
-            "message": f"Search error: {str(e)}",
-            "tours": [],
-            "count": 0
-        }
-
-
-@tool
-def search_locations(query: str, location_type: str = "destination") -> Dict[str, Any]:
-    """
-    Search for locations by name. Useful when customer mentions a place name.
-
-    Args:
-        query (str): Location name to search for
-        location_type (str): Either "origin" (departure cities) or "destination" (travel destinations)
-    """
-    result = find_location_by_name(query, location_type)
-
-    if result:
-        return {
-            "status": "found",
-            "location": {
-                "id": result["id"],
-                "name": result["name"],
-                "type": result["type"],
-                "country": result.get("country", ""),
-                "data": result["data"]
-            },
-            "message": f"Found {result['name']}" + (f" in {result['country']}" if result.get('country') else "")
-        }
-    else:
-        # Provide suggestions if no exact match
-        locations = get_locations_data() if location_type == "destination" else get_origin_locations_data()
-        suggestions = []
-
-        if location_type == "destination":
-            for country in locations[:5]:  # Top 5 countries
-                suggestions.append(country["name"])
-                suggestions.extend([city["name"] for city in country.get("children", [])[:2]])
-        else:
-            suggestions = [city["name"] for city in locations[:6]]
-
-        return {
-            "status": "not_found",
-            "message": f"Could not find '{query}'. Popular destinations include: {', '.join(suggestions[:8])}",
-            "suggestions": suggestions[:8]
         }
 
 
@@ -641,15 +1008,7 @@ def get_tour_recommendations(
 ) -> Dict[str, Any]:
     """
     Get personalized tour recommendations based on customer interests and preferences.
-
-    Args:
-        interests (List[str]): Customer interests (beach, culture, adventure, luxury, family, etc.)
-        budget_range (str): Budget category - budget, mid-range, luxury
-        travel_style (str): Travel style - relaxation, adventure, cultural, romantic, family
-        season (str): Preferred season - summer, winter, spring, autumn
-        origin_city (str): Departure city
     """
-
     # Interest to destination mapping
     interest_destinations = {
         "beach": ["Antaliya", "Dubai", "Sharm al-Shayx", "Pxuket", "Bali", "Male"],
@@ -666,15 +1025,6 @@ def get_tour_recommendations(
         "wellness": ["Tailand", "Bali", "Gruziya", "Turkiya"]
     }
 
-    # Season to destination mapping
-    season_destinations = {
-        "summer": ["Turkiya", "Gruziya", "Evropa"],
-        "winter": ["BAA", "Tailand", "Indoneziya", "Maldiv orollari", "Misr"],
-        "spring": ["Turkiya", "Gruziya", "BAA", "Vetnam"],
-        "autumn": ["BAA", "Turkiya", "Gruziya", "Misr"]
-    }
-
-    # Budget to price mapping
     budget_ranges = {
         "budget": (0, 500),
         "mid-range": (500, 1000),
@@ -689,11 +1039,6 @@ def get_tour_recommendations(
             for key, places in interest_destinations.items():
                 if key in interest_lower or interest_lower in key:
                     recommended_places.extend(places)
-
-        # Add seasonal recommendations
-        if season:
-            season_places = season_destinations.get(season.lower(), [])
-            recommended_places.extend(season_places)
 
         # Remove duplicates and get unique recommendations
         unique_places = list(set(recommended_places))
@@ -724,7 +1069,7 @@ def get_tour_recommendations(
 
         return {
             "status": "success",
-            "recommendations": sorted_tours[:8],
+            "recommendations": list(sorted_tours)[:8],
             "based_on": {
                 "interests": interests,
                 "budget_range": budget_range,
@@ -746,7 +1091,6 @@ def get_tour_recommendations(
 @tool
 def get_popular_destinations() -> Dict[str, Any]:
     """Get list of popular travel destinations with brief descriptions."""
-
     popular_destinations = {
         "Turkiya": {
             "cities": ["Istanbul", "Antaliya", "Kappadokiya", "Bodrum"],
@@ -796,7 +1140,6 @@ def get_popular_destinations() -> Dict[str, Any]:
 @tool
 def format_tour_details(tour_data: Dict[str, Any]) -> str:
     """Format tour information for easy reading."""
-
     tour = tour_data
 
     details = f"""
