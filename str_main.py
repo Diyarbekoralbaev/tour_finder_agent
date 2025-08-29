@@ -187,7 +187,7 @@ def setup_sidebar():
 
         # Popular Destinations
         st.markdown("### 🔥 Popular Destinations")
-        destinations = ["Turkey", "UAE", "Thailand", "Maldives", "Egypt", "Georgia"]
+        destinations = ["UAE", "Turkey", "Thailand", "Maldives", "Egypt", "Georgia"]
         destination_html = "".join([f'<span class="destination-highlight">{dest}</span>' for dest in destinations])
         st.markdown(destination_html, unsafe_allow_html=True)
 

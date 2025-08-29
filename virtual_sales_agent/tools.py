@@ -10,8 +10,6 @@ from difflib import get_close_matches
 
 load_dotenv()
 
-TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
-TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 TURTOPAR_API_BASE = "https://api.turtopar.uz/api/v1"
 
 # Cache for locations to avoid repeated API calls
@@ -270,6 +268,7 @@ TRANSLITERATION_MAP = {
     'paris': 'париж',
 }
 
+
 def normalize_and_transliterate(name: str) -> List[str]:
     """Normalize and provide transliteration variants for location name"""
     normalized = name.lower().strip()
@@ -391,6 +390,99 @@ def find_location_by_name(location_name: str, location_type: str = "destination"
 
 
 @tool
+def get_tour_details(tour_slug: str) -> Dict[str, Any]:
+    """
+    Get detailed information about a specific tour using its slug.
+    This provides comprehensive tour details including hotels, pricing, schedules, and contact information.
+
+    Args:
+        tour_slug (str): The tour slug identifier (from search results)
+    """
+    try:
+        print(f"🔍 Fetching detailed tour info for: {tour_slug}")
+
+        response = requests.get(f"{TURTOPAR_API_BASE}/tours/view/{tour_slug}", timeout=15)
+        print(f"📡 API Response status: {response.status_code}")
+
+        if response.status_code == 200:
+            data = response.json()
+            print(f"📊 API Response success: {data.get('success')}")
+
+            if data.get("success"):
+                tour_data = data.get("data", {})
+
+                # Format the detailed information
+                tour_info = {
+                    "status": "success",
+                    "tour_details": {
+                        "id": tour_data.get("id"),
+                        "name": tour_data.get("name"),
+                        "description": tour_data.get("description"),
+                        "price": tour_data.get("price"),
+                        "currency": tour_data.get("currency", "USD"),
+                        "duration": {
+                            "days": tour_data.get("days"),
+                            "nights": tour_data.get("nights")
+                        },
+                        "dates": {
+                            "from": tour_data.get("from_date"),
+                            "to": tour_data.get("to_date")
+                        },
+                        "is_hot": tour_data.get("is_hot", False),
+                        "images": tour_data.get("images", []),
+                        "locations": tour_data.get("locations", [])
+                    },
+                    "hotels": [],
+                    "organization": tour_data.get("organization", {}),
+                    "contact_info": {
+                        "responsible_person": tour_data.get("responsible_user", {}),
+                        "organization": tour_data.get("organization", {}),
+                        "contact_phone": tour_data.get("contact_phone")
+                    },
+                    "features": tour_data.get("features", []),
+                    "facilities": tour_data.get("facilities", []),
+                    "schedules": tour_data.get("schedules", []),
+                    "meta_data": tour_data.get("meta_data", {})
+                }
+
+                # Extract hotel information
+                for location in tour_data.get("locations", []):
+                    for hotel in location.get("hotels", []):
+                        tour_info["hotels"].append({
+                            "name": hotel.get("hotel_name"),
+                            "stars": hotel.get("stars"),
+                            "price": hotel.get("price"),
+                            "currency": hotel.get("currency", "USD"),
+                            "nights": hotel.get("nights"),
+                            "image": hotel.get("image"),
+                            "features": hotel.get("features", []),
+                            "location": hotel.get("location_name")
+                        })
+
+                return tour_info
+            else:
+                return {
+                    "status": "error",
+                    "message": "Tour details not found",
+                    "tour_details": {}
+                }
+        else:
+            return {
+                "status": "error",
+                "message": f"Failed to fetch tour details (HTTP {response.status_code})",
+                "tour_details": {}
+            }
+
+    except Exception as e:
+        print(f"💥 Tour details error: {str(e)}")
+        return {
+            "status": "error",
+            "message": f"Error fetching tour details: {str(e)}",
+            "tour_details": {}
+        }
+
+
+@tool
 def search_tours(
         origin_city: Optional[str] = None,
         destination_place: Optional[str] = None,
@@ -467,7 +559,9 @@ def search_tours(
                 for i, tour in enumerate(filtered_tours[:3]):
                     tour_days = tour.get('days', 'N/A')
                     tour_price = tour.get('price', 'N/A')
-                    print(f"Tour {i + 1}: {tour.get('name', 'Unnamed')} - ${tour_price} - {tour_days} days")
+                    tour_slug = tour.get('slug', 'no-slug')
+                    print(
+                        f"Tour {i + 1}: {tour.get('name', 'Unnamed')} - ${tour_price} - {tour_days} days - slug: {tour_slug}")
 
                 return {
                     "status": "success",
@@ -493,6 +587,7 @@ def search_tours(
             "tours": [],
             "count": 0
         }
+
 
 @tool
 def search_locations(query: str, location_type: str = "destination") -> Dict[str, Any]:
@@ -534,7 +629,6 @@ def search_locations(query: str, location_type: str = "destination") -> Dict[str
             "message": f"Could not find '{query}'. Popular destinations include: {', '.join(suggestions[:8])}",
             "suggestions": suggestions[:8]
         }
-
 
 
 @tool
@@ -699,147 +793,6 @@ def get_popular_destinations() -> Dict[str, Any]:
     }
 
 
-def send_telegram_notification(customer_data: Dict[str, Any]) -> Dict[str, Any]:
-    """Send customer inquiry to tour company via Telegram."""
-
-    if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHAT_ID:
-        return {
-            "notification_status": "error",
-            "message": "Contact information will be shared with tour consultant"
-        }
-
-    # Format message
-    tour_interests = customer_data.get('tour_interests', 'Not specified')
-    if isinstance(tour_interests, list):
-        tour_interests = ', '.join(tour_interests)
-
-    message = f"""
-🌟 **NEW TOUR INQUIRY!**
-
-👤 **Customer:** {customer_data.get('customer_name', 'N/A')}
-📞 **Phone:** {customer_data.get('phone', 'N/A')}
-📱 **Telegram:** {customer_data.get('telegram_username', 'N/A')}
-
-🎯 **Travel Interests:** {tour_interests}
-📍 **Preferred Destination:** {customer_data.get('preferred_destination', 'Open to suggestions')}
-🏠 **Origin City:** {customer_data.get('origin_city', 'Toshkent')}
-💰 **Budget Range:** {customer_data.get('budget_range', 'Not specified')} USD
-📅 **Travel Dates:** {customer_data.get('travel_dates', 'Flexible')}
-👥 **Group Size:** {customer_data.get('group_size', 'Not specified')} people
-
-📝 **Additional Notes:** {customer_data.get('additional_notes', 'None')}
-
-🕐 **Inquiry Time:** {customer_data.get('timestamp', datetime.now().strftime('%Y-%m-%d %H:%M'))}
-
-**Action Required:** Contact customer within 24 hours!
-"""
-
-    try:
-        url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
-        payload = {
-            "chat_id": TELEGRAM_CHAT_ID,
-            "text": message,
-            "parse_mode": "Markdown"
-        }
-
-        response = requests.post(url, json=payload, timeout=10)
-
-        if response.status_code == 200:
-            return {
-                "notification_status": "success",
-                "message": "Tour consultant will contact you within 24 hours!"
-            }
-        else:
-            return {
-                "notification_status": "partial",
-                "message": "Your inquiry has been received. Our team will contact you soon!"
-            }
-
-    except Exception as e:
-        return {
-            "notification_status": "error",
-            "message": "Your inquiry has been received. Our team will contact you soon!"
-        }
-
-
-@tool
-def collect_customer_inquiry(
-        customer_name: str,
-        phone: Optional[str] = None,
-        telegram_username: Optional[str] = None,
-        tour_interests: Optional[List[str]] = None,
-        preferred_destination: Optional[str] = None,
-        origin_city: str = "Toshkent",
-        budget_range: Optional[str] = None,
-        travel_dates: Optional[str] = None,
-        group_size: Optional[str] = None,
-        additional_notes: Optional[str] = None
-) -> Dict[str, Any]:
-    """
-    Collect customer tour inquiry with their preferences and contact information.
-
-    Args:
-        customer_name (str): Customer's full name
-        phone (str): Phone number with country code
-        telegram_username (str): Telegram username
-        tour_interests (List[str]): List of interests (beach, culture, adventure, etc.)
-        preferred_destination (str): Preferred destination if any
-        origin_city (str): Departure city
-        budget_range (str): Budget range (budget/mid-range/luxury)
-        travel_dates (str): Preferred travel dates
-        group_size (str): Number of travelers
-        additional_notes (str): Any additional requirements
-    """
-
-    # Validate contact information
-    if not phone and not telegram_username:
-        return {
-            "status": "error",
-            "message": "Please provide either phone number OR Telegram username for contact"
-        }
-
-    if phone:
-        # Basic phone validation
-        clean_phone = re.sub(r'[\s\-\(\)]', '', phone)
-        if not re.match(r'^\+\d{7,15}$', clean_phone):
-            return {
-                "status": "error",
-                "message": "Please provide phone with country code (e.g., +998901234567)"
-            }
-
-    # Store customer data
-    customer_data = {
-        "timestamp": datetime.now().isoformat(),
-        "customer_name": customer_name,
-        "phone": phone,
-        "telegram_username": telegram_username,
-        "tour_interests": tour_interests or [],
-        "preferred_destination": preferred_destination,
-        "origin_city": origin_city,
-        "budget_range": budget_range,
-        "travel_dates": travel_dates,
-        "group_size": group_size,
-        "additional_notes": additional_notes,
-        "inquiry_type": "tour_consultation"
-    }
-
-    # Send notification
-    notification_result = send_telegram_notification(customer_data)
-
-    return {
-        "status": "success",
-        "message": f"Thank you {customer_name}! Your tour inquiry has been received. Our expert travel consultant will contact you soon with personalized recommendations!",
-        "customer_data": customer_data,
-        "notification": notification_result,
-        "next_steps": [
-            "Travel consultant will review your preferences",
-            "You'll receive personalized tour recommendations",
-            "Detailed itinerary and pricing will be provided",
-            "Booking assistance available once you choose your tour"
-        ]
-    }
-
-
 @tool
 def format_tour_details(tour_data: Dict[str, Any]) -> str:
     """Format tour information for easy reading."""
@@ -854,6 +807,7 @@ def format_tour_details(tour_data: Dict[str, Any]) -> str:
 💰 **Price:** ${tour.get('price', 0)} USD
 ⏱️ **Duration:** {tour.get('days', 0)} days / {tour.get('nights', 0)} nights
 📅 **Dates:** {tour.get('from_date', '')} - {tour.get('to_date', '')}
+🆔 **Tour ID:** {tour.get('slug', 'N/A')}
 
 📝 **Description:**
 {tour.get('description', 'Full tour package with accommodation, transfers and guided tours.')}
@@ -866,5 +820,7 @@ def format_tour_details(tour_data: Dict[str, Any]) -> str:
             details += f"\n• {feature.get('name', 'Tour service')}"
     else:
         details += "\n• Accommodation\n• Airport transfers\n• Tour guide\n• Selected meals"
+
+    details += f"\n\n**📞 For more details and booking, use the tour slug: {tour.get('slug', 'contact-agent')}**"
 
     return details

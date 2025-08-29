@@ -15,9 +15,9 @@ from typing_extensions import TypedDict
 from .tools import (
     search_locations,
     search_tours,
+    get_tour_details,
     get_tour_recommendations,
     get_popular_destinations,
-    collect_customer_inquiry,
     format_tour_details,
 )
 # Import the monitoring utilities instead of the regular utils
@@ -33,8 +33,6 @@ os.environ["LANGCHAIN_PROJECT"] = os.getenv("LANGCHAIN_PROJECT", "")
 
 # API Keys
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
-TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
 if not OPENAI_API_KEY:
     raise ValueError("OPENAI_API_KEY environment variable is required")
@@ -103,9 +101,13 @@ assistant_prompt = ChatPromptTemplate.from_messages(
 - ONLY add departure_date if customer gives specific dates
 - Use search_locations to find proper destination names if needed
 - Present REAL tours with actual prices, dates, and details
+- Show tour names and brief info from search results
 
-**3. CLOSING PHASE:**
-- When they show interest, collect their contact information
+**3. DETAILED INFORMATION PHASE:**
+- When customer shows interest in a specific tour, use get_tour_details tool
+- Use the tour's "slug" from search results to get comprehensive details
+- Show detailed hotel options, pricing, schedules, and contact information
+- Provide organization contact details for booking
 
 **TOOL USAGE RULES:**
 
@@ -116,34 +118,50 @@ assistant_prompt = ChatPromptTemplate.from_messages(
 - origin_city: Default to "Toshkent" unless specified
 - budget_max: ONLY if customer mentions budget limit
 
+**get_tour_details parameters:**
+- tour_slug: Use the "slug" field from search_tours results
+- Call this when customer asks for more details about a specific tour
+- Provide comprehensive information including hotels, contact details, schedules
+
 **NEVER assume duration or dates - always ask if not specified**
 
 **EXAMPLE CONVERSATION:**
 Customer: "Dubayga borishni rejalashtiryabman"
 You: "Dubayga sayohat uchun turlarni qidiryapman..." [CALL search_tours with destination_place: "Dubay" ONLY]
-Then ask: "Necha kunlik sayohat rejalashtiryapsiz? Qachon borishni xohlaysiz?"
+Then show tour options and ask: "Qaysi turga qiziqasiz? Batafsil ma'lumot olish uchun ayting."
+
+Customer: "Birinchi turni ko'rsang bo'ladi"
+You: [CALL get_tour_details with the tour's slug] Then show comprehensive details, hotel options, and contact information.
 
 **RESPONSE RULES:**
 - Keep responses conversational and friendly
 - Show real tour options when found
-- Ask for missing details (duration, dates, budget)
+- For detailed requests, use get_tour_details to provide comprehensive information
+- Always provide contact details when showing tour details
 - NEVER assume trip details not provided by customer
+
+**CONTACT INFORMATION:**
+- When showing detailed tour information, always include:
+  - Tour operator contact details
+  - Responsible person contact information  
+  - Phone numbers for booking
+  - Organization details
 
 Current date: {time}
 
-Remember: Only search with the information customer actually provides. Ask for missing details rather than assuming.""",
+Remember: Only search with the information customer actually provides. Ask for missing details rather than assuming. Use get_tour_details for comprehensive information when customers show interest in specific tours.""",
         ),
         ("placeholder", "{messages}"),
     ]
 ).partial(time=datetime.now)
 
-# All tools for the tour consultation agent
+# All tools for the tour consultation agent (removed collect_customer_inquiry)
 all_tools = [
     search_locations,
     search_tours,
+    get_tour_details,
     get_tour_recommendations,
     get_popular_destinations,
-    collect_customer_inquiry,
     format_tour_details,
 ]
 
