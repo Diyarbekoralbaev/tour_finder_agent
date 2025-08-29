@@ -6,11 +6,12 @@ from dotenv import load_dotenv
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import Runnable, RunnableConfig
 from langchain_openai import ChatOpenAI
-from langgraph.checkpoint.memory import MemorySaver
+from langgraph.checkpoint.redis import RedisSaver
 from langgraph.graph import END, START, StateGraph
 from langgraph.graph.message import AnyMessage, add_messages
 from langgraph.prebuilt import tools_condition, ToolNode
 from typing_extensions import TypedDict
+import redis
 
 from .tools import (
     search_locations,
@@ -33,6 +34,7 @@ os.environ["LANGCHAIN_PROJECT"] = os.getenv("LANGCHAIN_PROJECT", "")
 
 # API Keys
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379")
 
 if not OPENAI_API_KEY:
     raise ValueError("OPENAI_API_KEY environment variable is required")
@@ -53,9 +55,9 @@ class Assistant:
             # If the LLM happens to return an empty response, we will re-prompt it
             # for an actual response.
             if not result.tool_calls and (
-                not result.content
-                or isinstance(result.content, list)
-                and not result.content[0].get("text")
+                    not result.content
+                    or isinstance(result.content, list)
+                    and not result.content[0].get("text")
             ):
                 messages = state["messages"] + [("user", "Respond with a real output.")]
                 state = {**state, "messages": messages}
@@ -74,13 +76,12 @@ llm = ChatOpenAI(
     max_retries=2,
 )
 
-# Professional Tour Consultant System Prompt
-
+# Professional Tour Consultant System Prompt with updated name
 assistant_prompt = ChatPromptTemplate.from_messages(
     [
         (
             "system",
-            """You are Aziza, a professional travel consultant specializing in international tours from Uzbekistan. You have 8+ years of experience helping customers find their perfect travel experiences.
+            """You are Diyarbek, an AI-powered professional travel consultant specializing in international tours from Uzbekistan. You leverage advanced artificial intelligence to help customers find their perfect travel experiences with real-time data and intelligent recommendations.
 
 **CRITICAL RULE: ALWAYS USE TOOLS TO SEARCH FOR REAL TOURS**
 - NEVER make up prices, dates, or tour information
@@ -139,6 +140,7 @@ You: [CALL get_tour_details with the tour's slug] Then show comprehensive detail
 - For detailed requests, use get_tour_details to provide comprehensive information
 - Always provide contact details when showing tour details
 - NEVER assume trip details not provided by customer
+- Mention that you're AI-powered when relevant to showcase technology
 
 **CONTACT INFORMATION:**
 - When showing detailed tour information, always include:
@@ -147,15 +149,21 @@ You: [CALL get_tour_details with the tour's slug] Then show comprehensive detail
   - Phone numbers for booking
   - Organization details
 
+**AI CAPABILITIES:**
+- Emphasize your ability to process real-time tour data
+- Highlight intelligent matching of customer preferences
+- Mention advanced search and recommendation algorithms
+- Show how AI enhances the consultation experience
+
 Current date: {time}
 
-Remember: Only search with the information customer actually provides. Ask for missing details rather than assuming. Use get_tour_details for comprehensive information when customers show interest in specific tours.""",
+Remember: Only search with the information customer actually provides. Ask for missing details rather than assuming. Use get_tour_details for comprehensive information when customers show interest in specific tours. Leverage your AI capabilities to provide superior service.""",
         ),
         ("placeholder", "{messages}"),
     ]
 ).partial(time=datetime.now)
 
-# All tools for the tour consultation agent (removed collect_customer_inquiry)
+# All tools for the tour consultation agent
 all_tools = [
     search_locations,
     search_tours,
@@ -176,19 +184,49 @@ builder.add_node("assistant", Assistant(assistant_runnable))
 # Use the monitored tool node instead of the regular one
 builder.add_node("tools", create_monitored_tool_node_with_fallback(all_tools))
 
+
 # Simple routing - no approval needed
 def route_tools(state: State):
     """Route to tools or end based on whether tools are called"""
     return tools_condition(state)
+
 
 # Define edges
 builder.add_edge(START, "assistant")
 builder.add_conditional_edges("assistant", route_tools, ["tools", END])
 builder.add_edge("tools", "assistant")
 
-# Compile the graph with memory
-memory = MemorySaver()
-graph = builder.compile(checkpointer=memory)
+
+# Initialize Redis connection and checkpointer
+def create_redis_checkpointer():
+    """Create Redis checkpointer with error handling"""
+    try:
+        # For now, let's use memory storage to avoid Redis issues
+        # Uncomment below when Redis is properly configured
+
+        redis_client = redis.from_url(REDIS_URL)
+        redis_client.ping()
+        print(f"✅ Redis connected successfully at {REDIS_URL}")
+        return RedisSaver(redis_client)
+
+        print("📝 Using in-memory storage for now")
+        from langgraph.checkpoint.memory import MemorySaver
+        return MemorySaver()
+
+    except Exception as e:
+        print(f"❌ Redis connection failed: {e}")
+        print("🔄 Falling back to in-memory storage...")
+
+        # Fallback to memory saver if Redis is not available
+        from langgraph.checkpoint.memory import MemorySaver
+        return MemorySaver()
+
+
+# Create checkpointer (Redis with fallback to memory)
+checkpointer = create_redis_checkpointer()
+
+# Compile the graph with Redis checkpointer
+graph = builder.compile(checkpointer=checkpointer)
 
 # Export for use in other modules
 __all__ = ['graph', 'State']

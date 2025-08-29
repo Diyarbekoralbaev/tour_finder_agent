@@ -1,19 +1,36 @@
 import json
 import uuid
-
 import streamlit as st
 from langchain_core.messages import AIMessage, HumanMessage
-
 from virtual_sales_agent.graph import graph
 
 
 def set_page_config():
     st.set_page_config(
-        page_title="Tour Consultant - Aziza",
+        page_title="Tour Consultant - Diyarbek",
         page_icon="✈️",
         layout="wide",
         initial_sidebar_state="expanded",
+        menu_items={
+            'Get Help': None,
+            'Report a bug': None,
+            'About': None
+        }
     )
+
+
+def hide_streamlit_style():
+    """Hide Streamlit default styling and settings"""
+    hide_st_style = """
+    <style>
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+    .stDeployButton {display: none;}
+    .stDecoration {display: none;}
+    </style>
+    """
+    st.markdown(hide_st_style, unsafe_allow_html=True)
 
 
 def set_page_style():
@@ -113,12 +130,107 @@ def set_page_style():
             margin-bottom: 1rem;
         }
 
+        .creator-info {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            color: white;
+            text-align: center;
+        }
+
+        .creator-info h3 {
+            color: #3498db;
+            margin-bottom: 1rem;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0.5rem 0;
+            font-size: 0.9rem;
+        }
+
+        .contact-item .icon {
+            margin-right: 0.5rem;
+        }
+
+        .ai-service-ad {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            color: white;
+            text-align: center;
+            font-size: 1rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        .ai-service-ad h4 {
+            margin: 0 0 0.8rem 0;
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
+        @keyframes glow {
+            from {
+                box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            }
+            to {
+                box-shadow: 0 4px 25px rgba(102, 126, 234, 0.6);
+            }
+        }
+
         .sidebar-footer {
             text-align: center;
-            margin-top: 2rem;
+            margin-top: 1rem;
             padding: 1rem;
             font-size: 0.8rem;
             color: #666;
+        }
+
+        .powered-by {
+            font-size: 0.75rem;
+            color: #888;
+            margin-top: 0.5rem;
+        }
+
+        /* Fix sidebar scrolling issue */
+        .css-1d391kg {
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+        }
+
+        /* Ensure sidebar content fits properly */
+        section[data-testid="stSidebar"] > div {
+            padding-bottom: 2rem;
+        }
+
+        /* Fix chat input text size */
+        .stChatInput > div > div > textarea {
+            font-size: 16px !important;
+            line-height: 1.4 !important;
+            padding: 12px !important;
+        }
+
+        /* Alternative selector for chat input */
+        div[data-testid="stChatInput"] textarea {
+            font-size: 16px !important;
+            line-height: 1.4 !important;
+            padding: 12px !important;
+        }
+
+        /* Chat input container styling */
+        div[data-testid="stChatInput"] {
+            font-size: 16px !important;
+        }
+
+        /* Make sure placeholder text is also larger */
+        div[data-testid="stChatInput"] textarea::placeholder {
+            font-size: 16px !important;
         }
         </style>
         """,
@@ -152,9 +264,9 @@ def setup_sidebar():
             """
             <div class="agent-profile">
                 <div class="profile-header">
-                    <div class="avatar">👩‍💼</div>
-                    <h1>Aziza - Tour Consultant</h1>
-                    <p style="margin: 0.5rem 0; opacity: 0.9;">8+ Years Experience</p>
+                    <div class="avatar">👨‍💼</div>
+                    <h1>Diyarbek - Tour Consultant</h1>
+                    <p style="margin: 0.5rem 0; opacity: 0.9;">AI-Powered Expert</p>
                 </div>
                 <div class="feature-list">
                     <div class="feature-item">
@@ -173,6 +285,10 @@ def setup_sidebar():
                         <span class="icon">📞</span>
                         <span>Expert Consultation</span>
                     </div>
+                    <div class="feature-item">
+                        <span class="icon">🤖</span>
+                        <span>AI-Enhanced Service</span>
+                    </div>
                 </div>
                 <div class="status-card">
                     <div class="status-indicator"></div>
@@ -182,14 +298,6 @@ def setup_sidebar():
         """,
             unsafe_allow_html=True,
         )
-
-        st.markdown("---")
-
-        # Popular Destinations
-        st.markdown("### 🔥 Popular Destinations")
-        destinations = ["UAE", "Turkey", "Thailand", "Maldives", "Egypt", "Georgia"]
-        destination_html = "".join([f'<span class="destination-highlight">{dest}</span>' for dest in destinations])
-        st.markdown(destination_html, unsafe_allow_html=True)
 
         st.markdown("---")
 
@@ -217,12 +325,49 @@ def setup_sidebar():
             if prefs.get("destination"):
                 st.write(f"**Destination:** {prefs['destination']}")
 
+        # Creator Information
+        st.markdown(
+            """
+            <div class="creator-info">
+                <h3>Created by</h3>
+                <div class="contact-item">
+                    <span class="icon">👨‍💻</span>
+                    <span><strong>Diyarbek Oralbaev</strong></span>
+                </div>
+                <div class="contact-item">
+                    <span class="icon">📱</span>
+                    <span>+998 91 927 70 05</span>
+                </div>
+                <div class="contact-item">
+                    <span class="icon">📸</span>
+                    <span>@diyarbek.ai</span>
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        # AI Service Advertisement - separate markdown block
+        st.markdown(
+            """
+            <div class="ai-service-ad">
+                <h4>🤖 Need an AI Agent for Your Business?</h4>
+                <p>Transform your business with custom AI solutions!<br>
+                Get intelligent automation, chatbots, and AI assistants<br>
+                tailored to your specific needs.</p>
+                <strong>Contact us today for consultation!</strong>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
         st.markdown(
             """
             <div class="sidebar-footer">
                 <div class="powered-by">
                     ✈️ Professional Tour Consulting<br>
-                    🤖 AI-Enhanced Experience
+                    🤖 AI-Enhanced Experience<br>
+                    Powered by Advanced AI Technology
                 </div>
             </div>
         """,
@@ -232,28 +377,12 @@ def setup_sidebar():
 
 def display_chat_history():
     """Display the chat history."""
-    if not st.session_state.messages:
-        st.markdown(
-            """
-            <div class="welcome-section">
-                <h1>👋 Salom! I'm Aziza, your personal tour consultant</h1>
-                <p style="font-size: 1.1rem; color: #424242;">
-                    With 8+ years of experience, I'll help you find the perfect international tour from Uzbekistan. 
-                    Whether you're dreaming of Turkish beaches, Dubai luxury, or Maldivian paradise - let's make it happen!
-                </p>
-                <p style="color: #666; margin-top: 1rem;">
-                    Tell me about your travel dreams, and I'll create the perfect recommendations for you.
-                </p>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-
+    # Simply display chat messages without any welcome message
     # Display chat messages
     for message in st.session_state.messages:
         role = "user" if isinstance(message, HumanMessage) else "assistant"
 
-        with st.chat_message(role, avatar="🧳" if role == "user" else "👩‍💼"):
+        with st.chat_message(role, avatar="🧳" if role == "user" else "🤖"):
             st.write(message.content)
 
 
@@ -274,7 +403,7 @@ def process_agent_response(events):
                 st.session_state.messages.append(last_message)
 
                 # Display the assistant response
-                with st.chat_message("assistant", avatar="👩‍💼"):
+                with st.chat_message("assistant", avatar="🤖"):
                     st.write(last_message.content)
 
 
@@ -323,12 +452,13 @@ def extract_preferences_from_conversation():
 
 def main():
     set_page_config()
+    hide_streamlit_style()
     set_page_style()
     initialize_session_state()
     setup_sidebar()
 
     # Main chat interface
-    st.title("🌟 Professional Tour Consultation")
+    st.title("🌟 AI-Powered Professional Tour Consultation")
 
     display_chat_history()
 
@@ -344,7 +474,7 @@ def main():
 
         # Process through tour agent
         try:
-            with st.spinner("Aziza is thinking about your perfect tour..."):
+            with st.spinner("Diyarbek is analyzing your request and searching for perfect tours..."):
                 events = list(
                     graph.stream(
                         {"messages": st.session_state.messages},
@@ -358,6 +488,8 @@ def main():
 
         except Exception as e:
             st.error(f"I apologize, but I'm having a technical issue. Please try again. Error: {str(e)}")
+            # Log error for debugging
+            st.write(f"Debug info: {type(e).__name__}: {str(e)}")
 
     # Quick action buttons
     if len(st.session_state.messages) == 0:
