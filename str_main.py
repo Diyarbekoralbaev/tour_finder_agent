@@ -450,6 +450,36 @@ def extract_preferences_from_conversation():
     st.session_state.customer_preferences = preferences
 
 
+def process_message(prompt):
+    """Process a message through the tour agent"""
+    # Add user message
+    human_message = HumanMessage(content=prompt)
+    st.session_state.messages.append(human_message)
+
+    # Display user message
+    with st.chat_message("user", avatar="🧳"):
+        st.write(prompt)
+
+    # Process through tour agent
+    try:
+        with st.spinner("Diyarbek is analyzing your request and searching for perfect tours..."):
+            events = list(
+                graph.stream(
+                    {"messages": st.session_state.messages},
+                    st.session_state.config,
+                    stream_mode="values",
+                )
+            )
+
+            process_agent_response(events)
+            extract_preferences_from_conversation()
+
+    except Exception as e:
+        st.error(f"I apologize, but I'm having a technical issue. Please try again. Error: {str(e)}")
+        # Log error for debugging
+        st.write(f"Debug info: {type(e).__name__}: {str(e)}")
+
+
 def main():
     set_page_config()
     hide_streamlit_style()
@@ -462,34 +492,15 @@ def main():
 
     display_chat_history()
 
+    # Check for pending message from quick start buttons
+    if "pending_message" in st.session_state and st.session_state.pending_message:
+        pending_msg = st.session_state.pending_message
+        st.session_state.pending_message = None  # Clear the pending message
+        process_message(pending_msg)
+
     # Chat input
     if prompt := st.chat_input("Tell me about your dream vacation..."):
-        # Add user message
-        human_message = HumanMessage(content=prompt)
-        st.session_state.messages.append(human_message)
-
-        # Display user message
-        with st.chat_message("user", avatar="🧳"):
-            st.write(prompt)
-
-        # Process through tour agent
-        try:
-            with st.spinner("Diyarbek is analyzing your request and searching for perfect tours..."):
-                events = list(
-                    graph.stream(
-                        {"messages": st.session_state.messages},
-                        st.session_state.config,
-                        stream_mode="values",
-                    )
-                )
-
-                process_agent_response(events)
-                extract_preferences_from_conversation()
-
-        except Exception as e:
-            st.error(f"I apologize, but I'm having a technical issue. Please try again. Error: {str(e)}")
-            # Log error for debugging
-            st.write(f"Debug info: {type(e).__name__}: {str(e)}")
+        process_message(prompt)
 
     # Quick action buttons
     if len(st.session_state.messages) == 0:
@@ -498,20 +509,17 @@ def main():
 
         with col1:
             if st.button("🏖️ Beach Vacation", use_container_width=True):
-                prompt = "I want a relaxing beach vacation with beautiful resorts and crystal clear water"
-                st.session_state.messages.append(HumanMessage(content=prompt))
+                st.session_state.pending_message = "I want a relaxing beach vacation with beautiful resorts and crystal clear water"
                 st.rerun()
 
         with col2:
             if st.button("🏛️ Cultural Tour", use_container_width=True):
-                prompt = "I'm interested in a cultural tour with historical sites and local experiences"
-                st.session_state.messages.append(HumanMessage(content=prompt))
+                st.session_state.pending_message = "I'm interested in a cultural tour with historical sites and local experiences"
                 st.rerun()
 
         with col3:
             if st.button("💎 Luxury Experience", use_container_width=True):
-                prompt = "I want a luxury vacation with premium accommodations and exclusive experiences"
-                st.session_state.messages.append(HumanMessage(content=prompt))
+                st.session_state.pending_message = "I want a luxury vacation with premium accommodations and exclusive experiences"
                 st.rerun()
 
 
