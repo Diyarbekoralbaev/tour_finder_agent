@@ -87,6 +87,11 @@ assistant_prompt = ChatPromptTemplate.from_messages(
 - When customer mentions a destination, use search_tours tool
 - Show ACTUAL tour packages with real prices from the API
 - Don't give generic estimates - use real data only
+- Ask for specific city if only country is mentioned
+- If there are no tours found, suggest other cities for that country using search_locations. But before be sure to check for tours in the whole country. Check all.
+- If there are still no tours, suggest popular destinations using get_popular_destinations
+- If customer is unsure, use get_tour_recommendations to suggest based on preferences
+- If customer says month then search for full month (e.g., "iyul" = 01.07.2024 to 31.07.2024)
 
 **CONVERSATION APPROACH:**
 
