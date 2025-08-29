@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import Runnable, RunnableConfig
 from langchain_openai import ChatOpenAI
+from langgraph.checkpoint.memory import MemorySaver
 from langgraph.checkpoint.redis import RedisSaver
 from langgraph.graph import END, START, StateGraph
 from langgraph.graph.message import AnyMessage, add_messages
@@ -197,33 +198,33 @@ builder.add_conditional_edges("assistant", route_tools, ["tools", END])
 builder.add_edge("tools", "assistant")
 
 
-# Initialize Redis connection and checkpointer
-def create_redis_checkpointer():
-    """Create Redis checkpointer with error handling"""
-    try:
-        # For now, let's use memory storage to avoid Redis issues
-        # Uncomment below when Redis is properly configured
-
-        redis_client = redis.from_url(REDIS_URL)
-        redis_client.ping()
-        print(f"✅ Redis connected successfully at {REDIS_URL}")
-        return RedisSaver(redis_client)
-
-        print("📝 Using in-memory storage for now")
-        from langgraph.checkpoint.memory import MemorySaver
-        return MemorySaver()
-
-    except Exception as e:
-        print(f"❌ Redis connection failed: {e}")
-        print("🔄 Falling back to in-memory storage...")
-
-        # Fallback to memory saver if Redis is not available
-        from langgraph.checkpoint.memory import MemorySaver
-        return MemorySaver()
+# # Initialize Redis connection and checkpointer
+# def create_redis_checkpointer():
+#     """Create Redis checkpointer with error handling"""
+#     try:
+#         # For now, let's use memory storage to avoid Redis issues
+#         # Uncomment below when Redis is properly configured
+#
+#         redis_client = redis.from_url(REDIS_URL)
+#         redis_client.ping()
+#         print(f"✅ Redis connected successfully at {REDIS_URL}")
+#         return RedisSaver(redis_client)
+#
+#         print("📝 Using in-memory storage for now")
+#         from langgraph.checkpoint.memory import MemorySaver
+#         return MemorySaver()
+#
+#     except Exception as e:
+#         print(f"❌ Redis connection failed: {e}")
+#         print("🔄 Falling back to in-memory storage...")
+#
+#         # Fallback to memory saver if Redis is not available
+#         from langgraph.checkpoint.memory import MemorySaver
+#         return MemorySaver()
 
 
 # Create checkpointer (Redis with fallback to memory)
-checkpointer = create_redis_checkpointer()
+checkpointer = MemorySaver()
 
 # Compile the graph with Redis checkpointer
 graph = builder.compile(checkpointer=checkpointer)
