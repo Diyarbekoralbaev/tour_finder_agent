@@ -98,7 +98,7 @@ assistant_prompt = ChatPromptTemplate.from_messages(
 **2. SEARCH AND RECOMMEND PHASE:**
 - Use search_tours when customer shows interest in a destination
 - Ask for specific city if only country is mentioned
-- If there are no tours found, suggest other cities for that country using search_locations
+- If there are no tours found, suggest other cities for that country using search_locations. But before be sure to check for tours in the whole country.
 - If there are still no tours, suggest popular destinations using get_popular_destinations
 - If customer is unsure, use get_tour_recommendations to suggest based on preferences
 - If customer says month then search for full month (e.g., "iyul" = 01.07.2024 to 31.07.2024)
